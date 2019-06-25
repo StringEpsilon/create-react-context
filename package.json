@@ -24,9 +24,8 @@
 		"prepublish": "npm run build"
 	},
 	"dependencies": {
-		"gud": "^1.0.0",
-		"tiny-warning": "^1.0.2",
-		"@babel/runtime": "^7.4.0"
+		"@babel/runtime": "^7.4.0",
+		"tiny-warning": "^1.0.2"
 	},
 	"peerDependencies": {
 		"prop-types": "^15.0.0",

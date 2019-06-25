@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import gud from 'gud';
 import warning from 'tiny-warning';
+
+const commonjsGlobal: any =
+  typeof globalThis !== 'undefined'
+  ? globalThis
+  : typeof window !== 'undefined'
+  ? window
+  : typeof global !== 'undefined'
+  ? global
+  : typeof self !== 'undefined'
+  ? self
+  : {};
+
+function getUniqueId() {
+  const key = '__global_unique_id__';
+  return commonjsGlobal[key] = (commonjsGlobal[key] || 0) + 1;
+}
 
 const MAX_SIGNED_31_BIT_INT = 1073741823;
 
@@ -67,7 +82,7 @@ function onlyChild(children: any): any {
 }
 
 export default function createReactContext<T>(defaultValue: T, calculateChangedBits?: (a: T, b: T) => number): Context<T> {
-	const contextProp = '__create-react-context-' + gud() + '__';
+	const contextProp = '__create-react-context-' + getUniqueId() + '__';
 
 	class Provider extends Component<ProviderProps<T>> {
 		emitter = createEventEmitter(this.props.value);
