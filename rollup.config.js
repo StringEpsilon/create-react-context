@@ -1,18 +1,12 @@
 import ts from "@wessberg/rollup-plugin-ts";
 import path from "path";
-import commonjs from "rollup-plugin-commonjs";
 import nodeResolve from "rollup-plugin-node-resolve";
-import { uglify } from "rollup-plugin-uglify";
+import { terser } from "rollup-plugin-terser";
+
 const extensions = [".ts", ".tsx"];
 
-function isBareModuleId(id) {
-	if (id.startsWith(".")) {
-		return false;
-	}
-	if (id.startsWith("src")) {
-		return false;
-	}
-	return !id.includes(path.join(process.cwd(), "src"));
+function isExternal(id) {
+  return id.startsWith(".") === false && path.isAbsolute(id) === false;
 }
 
 export default function configureRollup() {
@@ -21,39 +15,36 @@ export default function configureRollup() {
 		{
 			input: "src/index.ts",
 			output: { file: `dist/cjs/index.js`, format: "cjs", compact: true },
-			external: isBareModuleId,
+			external: isExternal,
 			plugins: [
 				nodeResolve({ extensions }),
 				ts({
 					transpiler: "babel",
 				}),
-				commonjs(),
 			],
 		},
 		{
 			input: "src/index.ts",
 			output: { file: `dist/cjs/index.min.js`, format: "cjs", compact: true },
-			external: isBareModuleId,
+			external: isExternal,
 			plugins: [
 				nodeResolve({ extensions }),
 				ts({
 					transpiler: "babel",
 				}),
-				commonjs(),
-				uglify(),
+				terser(),
 			],
 		},
 		// ESM:
 		{
 			input: "src/index.ts",
 			output: { file: `dist/esm/index.js`, format: "esm" },
-			external: isBareModuleId,
+			external: isExternal,
 			plugins: [
 				nodeResolve({ extensions }),
 				ts({
 					transpiler: "babel",
 				}),
-				commonjs(),
 			],
 		},
 	];
